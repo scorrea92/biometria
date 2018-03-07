@@ -17,7 +17,7 @@ x = float(x)
 
 name = sys.argv[1]
 score_cliente_A = np.loadtxt("practicas/"+name+"_clientes")[:,1]
-score_imposto_A = np.loadtxt("practicas/"+name+"_impostores")[:,1]
+   = np.loadtxt("practicas/"+name+"_impostores")[:,1]
 xA = np.unique(np.append(score_cliente_A, score_imposto_A))
 
 def FPFN(score_imposto, score_cliente, x):
@@ -77,7 +77,7 @@ def plot_ROC(fpa, fna, xA, x, name):
     plt.plot(fp_min, fn_min, 'r^')
     plt.plot(fp_x, fn_x, 'g^')
     plt.plot(fp_x2, fn_x2, 'y^')
-
+    plt.plot([0, 1], [0, 1], 'k--')
     red_patch = mpatches.Patch(color='red', label='FP=FN')
     blue_patch = mpatches.Patch(color='blue', label='Curva ROC')
     green_patch = mpatches.Patch(color='green', label='FN = x')

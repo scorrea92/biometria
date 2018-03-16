@@ -1,24 +1,10 @@
+import math
 import sys
 import numpy as np
 import collections
 import matplotlib.pyplot as plt
 import matplotlib.patches as mpatches
 
-print('Argument List:', str(sys.argv))
-
-try:
-    # Para Python2
-    x = raw_input("Ingrese X, por defecto (=0.5): ") or 0.5
-except :
-    # Para Python3
-    x = input("Ingrese X, por defecto (=0.5): ") or 0.5
-
-x = float(x)
-
-name = sys.argv[1]
-score_cliente_A = np.loadtxt("practicas/"+name+"_clientes")[:,1]
-   = np.loadtxt("practicas/"+name+"_impostores")[:,1]
-xA = np.unique(np.append(score_cliente_A, score_imposto_A))
 
 def FPFN(score_imposto, score_cliente, x):
     fn = []
@@ -90,11 +76,34 @@ def plot_ROC(fpa, fna, xA, x, name):
     plt.title(name)
     plt.show()
 
-def D_Prime(fp, fn):
-    fn = 1-fn
-    d = (fp.mean()-fn.mean())/np.sqrt(fp.std()+fn.std())
+def D_Prime(p, n):
+    d = (p.mean()-n.mean())/math.sqrt(p.var()+n.var())
     print("Deprime = ", d)
 
-fpa, fna = FPFN(score_imposto_A, score_cliente_A, xA)
-D_Prime(fpa, fna)
-plot_ROC(fpa, fna, xA, x, name)
+def AROC(sC, sI):
+    H=0
+    for c in sC:
+        H += collections.Counter(sI<c)[True] + 0.5*collections.Counter(c==sI)[True]
+    
+    return H/(len(sC)*len(sI))
+
+print('Argument List:', str(sys.argv))
+
+try:
+    # Para Python2
+    x = raw_input("Ingrese X, por defecto (=0.5): ") or 0.5
+except :
+    # Para Python3
+    x = input("Ingrese X, por defecto (=0.5): ") or 0.5
+
+x = float(x)
+
+name = sys.argv[1]
+score_cliente = np.loadtxt("data/"+name+"_clientes")[:,1]
+score_imposto  = np.loadtxt("data/"+name+"_impostores")[:,1]
+xA = np.unique(np.append(score_cliente, score_imposto)) # x min es umbrales
+
+fpa, fna1 = FPFN(score_imposto, score_cliente, xA)
+D_Prime(score_cliente, score_imposto)
+print('AROC = ',AROC(score_cliente, score_imposto))
+plot_ROC(fpa, fna1, xA, x, name)

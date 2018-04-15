@@ -1,21 +1,15 @@
 # coding: utf-8
-import os
-import keras
 import random
-import pandas as pd
 import numpy as np
-import tensorflow as tf
-from keras.models import Sequential, Model, load_model
-from keras.layers import Dropout, Input, Add, Dense, Activation, ZeroPadding2D
-from keras.layers import BatchNormalization, Flatten, Conv2D, AveragePooling2D, MaxPooling2D, GlobalMaxPooling2D
-from keras import backend as K
-from keras.optimizers import SGD, Adam
+from keras.models import Sequential
+from keras.layers import Dropout, Dense, Activation
+from keras.layers import Flatten, Conv2D, MaxPooling2D
+from keras.optimizers import Adam
 from keras.preprocessing.image import ImageDataGenerator
 from keras.initializers import glorot_uniform
 from keras.layers.normalization import BatchNormalization as BN
 from keras.layers import GaussianNoise as GN
-from keras.callbacks import LearningRateScheduler, CSVLogger
-from keras import regularizers
+from keras.callbacks import LearningRateScheduler
 
 from sklearn.model_selection import train_test_split
 from sklearn.metrics import confusion_matrix, classification_report
@@ -127,3 +121,6 @@ print("_________________Test Confusion Matrix_________________")
 print(confusion_matrix(y_test, y_pred))
 print("______________________Test Report______________________")
 print(classification_report(y_test, y_pred))
+
+model.save('model.h5')
+model.save_weights('weights.h5')

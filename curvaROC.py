@@ -4,7 +4,11 @@ import numpy as np
 import collections
 import matplotlib.pyplot as plt
 import matplotlib.patches as mpatches
+import argparse
 
+# Para ejecutarse se deben tener dos archivos en la carpeta data en la raiz del directorio
+# con el siguiente formato x_clientes y x_impostores, el script se ejecuta asi:
+# python curvaROC.py x 
 
 def FPFN(score_imposto, score_cliente, x):
     fn = []
@@ -87,18 +91,20 @@ def AROC(sC, sI):
     
     return H/(len(sC)*len(sI))
 
-print('Argument List:', str(sys.argv))
 
-try:
-    # Para Python2
-    x = raw_input("Ingrese X, por defecto (=0.5): ") or 0.5
-except :
-    # Para Python3
-    x = input("Ingrese X, por defecto (=0.5): ") or 0.5
+# ArgPaser
+parser = argparse.ArgumentParser(description='Curva ROC y metricas')
+parser.add_argument('-x', '--x', type =float, default=0.5,
+                   help='Valor de x para calcular FP(FN=x), FN(FP=x)')
+parser.add_argument('-d', '--data',  type =str, default='scoresA',
+                   help='nombre de datos, los datos deben tener el formato'+'\n'+ 
+                       'nombre_clientes y nombre_impostores')
 
-x = float(x)
+args = parser.parse_args()
 
-name = sys.argv[1]
+name = args.data
+x = args.x
+
 score_cliente = np.loadtxt("data/"+name+"_clientes")[:,1]
 score_imposto  = np.loadtxt("data/"+name+"_impostores")[:,1]
 xA = np.unique(np.append(score_cliente, score_imposto)) # x min es umbrales

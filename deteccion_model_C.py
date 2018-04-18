@@ -34,7 +34,17 @@ def step_decay(epoch):
 """Load Data"""
 img_rows, img_cols = 24, 24
 faces = np.loadtxt('data/dfFaces_24x24_norm')
+x = np.load("data/extra_faces.npy")
+x = x.reshape(x.shape[0],576)
+faces = np.concatenate((faces,x),axis=0)
+
+
 notfaces = np.loadtxt('data/NotFaces_24x24_norm')
+x = np.load("data/extra_NotFaces.npy")
+x = x.reshape(x.shape[0],576)
+notfaces = np.concatenate((notfaces,x),axis=0)
+
+
 yfaces = np.ones(faces.shape[0])
 yNotfaces = np.zeros(notfaces.shape[0])
 
@@ -122,5 +132,5 @@ print(confusion_matrix(y_test, y_pred))
 print("______________________Test Report______________________")
 print(classification_report(y_test, y_pred))
 
-model.save('model.h5')
-model.save_weights('weights.h5')
+model.save('model_extraData.h5')
+model.save_weights('weights_model_extraData.h5')

@@ -1,6 +1,3 @@
-# import the necessary packages
-#%clear
-print("Ejecutandose......")
 import numpy as np
 import argparse
 import cv2
@@ -18,7 +15,16 @@ from sklearn import preprocessing
 #args = vars(ap.parse_args())
 #img = args["template"]
 
-img_path = "data/test2.jpg"
+
+def scale_width(oriimg, W):
+    height, width, depth = oriimg.shape
+    imgScale = W/width
+    newX,newY = oriimg.shape[1]*imgScale, oriimg.shape[0]*imgScale
+    newimg = cv2.resize(oriimg,(int(newX),int(newY)))
+    
+    return newimg
+
+img_path = "data/test5.jpg"
 img_rows, img_cols = 24, 24
 
 
@@ -26,12 +32,20 @@ model = load_model('model_extraData.h5')
 model.load_weights('weights_model_extraData.h5')
 
 # load the image image, convert it to grayscale
-template = cv2.imread(img_path)
-template = cv2.cvtColor(template, cv2.COLOR_BGR2GRAY)
+template_color = cv2.imread(img_path)
+template_color_resize = scale_width(template_color, 24*25)
+template = cv2.cvtColor(template_color_resize, cv2.COLOR_BGR2GRAY)
 
-delta = [1, 0.9, 0.8, 0.7, 0.6, 0.5, 0.4, 0.3, 0.2, 0.1]#[1, 0.75, 0.5, 0.25, 0.1] #np.linspace(1, 0.1, 10, endpoint=True)
-divh = 2#int(template.shape[0]/100) 
-divw = 2#int(template.shape[0]/100) 
+
+delta = [1, 0.9, 0.8, 0.7, 0.6, 0.5, 0.4, 0.3, 0.2, 0.1]
+delta = np.linspace(1, 0.05, 20, endpoint=True)
+if template.shape[0]>template.shape[1]:
+    swing = template.shape[1]
+else:
+    swing = template.shape[0]
+    
+divh = int(swing/100) 
+divw = int(swing/100) 
 
 import time
 start = time.time()
@@ -66,19 +80,16 @@ crop_image = crop_image.reshape(crop_image.shape[0],img_rows, img_cols, 1)
 start = time.time()
 prediction = model.predict(crop_image)
 end = time.time()
-print("Tiempo de predicción", end - start)
+print("Tiempo de prediccion", end - start)
 
 
 start = time.time()
 predict_faces=[]
 for i, a in enumerate(prediction):
-    if prediction[i] > 0.9:
+    if prediction[i] < 0.1:
         predict_faces.append([crop_image[i],crop_boxes[i], prediction[i]])
 
-template = cv2.imread(img_path)
-template = cv2.cvtColor(template, cv2.COLOR_BGR2GRAY)
-
-img = template
+img = template_color_resize
 faces_or_scale =[]
 for a in predict_faces:
     x = int(a[1][0]/a[1][2])
@@ -92,6 +103,10 @@ end = time.time()
 print("Tiempo de dibujado de boxes", end - start)
 
 %varexp --imshow img
+
+#cv2.imshow('Face Detection',img)
+#cv2.waitKey(0)
+#cv2.destroyAllWindows()
 
 #template = cv2.imread(img_path)
 #img = template
@@ -107,6 +122,11 @@ print("Tiempo de dibujado de boxes", end - start)
 #    img = cv2.rectangle(img, (int(a[0]), int(a[1])), (int(a[2]),int(a[3])), (255,255,255), 3)
 #
 #
-#%varexp --imshow img
+#not_faces = []
+#for not_face in predict_faces:
+#    not_faces.append(not_face[0].reshape(24,24))
+#
+#not_faces = np.array(not_faces)
+
 
 

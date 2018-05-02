@@ -50,7 +50,7 @@ for participant in participants:
         num += 1
 
 faces = np.array(faces)
-
+np.save("extra_faces.npy", faces)
 
 """Not Faces Data Base"""
 num = 0
@@ -72,6 +72,8 @@ for participant in participants:
             print("Found not-faces in the image file {}".format(participant))   
 
 not_faces = np.array(not_faces)
+np.save("extra_Notfaces.npy", not_faces)
+
 
 
 

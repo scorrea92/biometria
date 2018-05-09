@@ -18,9 +18,15 @@ from sklearn import preprocessing
 
 def scale_width(oriimg, W):
     height, width, depth = oriimg.shape
-    imgScale = W/width
-    newX,newY = oriimg.shape[1]*imgScale, oriimg.shape[0]*imgScale
-    newimg = cv2.resize(oriimg,(int(newX),int(newY)))
+    if width > W:
+        imgScale = W/width
+        newX,newY = oriimg.shape[1]*imgScale, oriimg.shape[0]*imgScale
+        newimg = cv2.resize(oriimg,(int(newX),int(newY)))
+    else:
+        
+        imgScale = int(width/24)*24/width
+        newX,newY = oriimg.shape[1]*imgScale, oriimg.shape[0]*imgScale
+        newimg = cv2.resize(oriimg,(int(newX),int(newY)))
     
     return newimg
 
@@ -85,48 +91,71 @@ print("Tiempo de prediccion", end - start)
 
 start = time.time()
 predict_faces=[]
+center_faces=[]
 for i, a in enumerate(prediction):
-    if prediction[i] < 0.1:
+    if prediction[i] > 0.9:
         predict_faces.append([crop_image[i],crop_boxes[i], prediction[i]])
+        x = int(crop_boxes[i][0]/crop_boxes[i][2])
+        y = int(crop_boxes[i][1]/crop_boxes[i][2])
+        center_faces.append([x+24, y+24])
 
-img = template_color_resize
-faces_or_scale =[]
-for a in predict_faces:
-    x = int(a[1][0]/a[1][2])
-    y = int(a[1][1]//a[1][2])
-    x1 = int((a[1][0] + 24)/a[1][2])
-    y1 = int((a[1][1] + 24)/a[1][2])
-    faces_or_scale.append([x,y,x1,y1, x1+(x1-x), y1+(y1-y)])
-    img = cv2.rectangle(img, (x, y), (x1,y1), (255,255,255), 5)
+center_faces = np.array(center_faces)
 
-end = time.time()
-print("Tiempo de dibujado de boxes", end - start)
-
-%varexp --imshow img
-
-#cv2.imshow('Face Detection',img)
-#cv2.waitKey(0)
-#cv2.destroyAllWindows()
-
-#template = cv2.imread(img_path)
-#img = template
-#faces_or_scale_np = np.array(faces_or_scale)
-#paint_faces = []
-#for a in faces_or_scale:
-#    c = np.logical_and(np.abs(faces_or_scale_np[:,-2] - a[-2]) < int(template.shape[0]/10),
-#                       np.abs(faces_or_scale_np[:,-1] - a[-1]) < int(template.shape[0]/10))
-#    paint_faces.append(np.average(faces_or_scale_np[c], axis=0))
-#
-#from random import randint
-#for a in paint_faces:
-#    img = cv2.rectangle(img, (int(a[0]), int(a[1])), (int(a[2]),int(a[3])), (255,255,255), 3)
-#
-#
-#not_faces = []
-#for not_face in predict_faces:
-#    not_faces.append(not_face[0].reshape(24,24))
-#
-#not_faces = np.array(not_faces)
-
-
-
+if center_faces.shape[0] > 0:
+    center_faces = center_faces[center_faces[:, 0].argsort()]
+    
+    new_boxes = []
+    for box in center_faces:
+        x = box[0]
+        y = box[1]
+        count = 1
+        for all_box in center_faces:
+            if abs(box[0]-all_box[0]) < swing/10 and abs(box[1]-all_box[1]) < swing/10:
+                x += all_box[0]
+                y += all_box[1]
+                count+=1
+        
+        new_boxes.append([int(x/count), int(y/count)])
+    new_boxes = np.unique(np.array(new_boxes), axis=0)
+    
+    new_boxes2 = []
+    for box in new_boxes:
+        x = box[0]
+        y = box[1]
+        count = 1
+        for all_box in new_boxes:
+            if abs(box[0]-all_box[0]) < swing/10 and abs(box[1]-all_box[1]) < swing/10:
+                x += all_box[0]
+                y += all_box[1]
+                count+=1
+        
+        new_boxes2.append([int(x/count), int(y/count)])
+    new_boxes2 = np.unique(new_boxes2, axis=0)
+    
+    template_color = cv2.imread(img_path)
+    template_color_resize = scale_width(template_color, 24*25)
+    img = template_color_resize
+    
+    for a in new_boxes2:
+        img = cv2.rectangle(img,(a[0]-24, a[1]+24), (a[0]+24,a[1]-24), (255,255,255), 5)
+    
+    end = time.time()
+    print("Tiempo de dibujado de boxes", end - start)
+    
+    %varexp --imshow img
+    
+    
+    #cv2.imshow('Face Detection',img)
+    #cv2.waitKey(0)
+    #cv2.destroyAllWindows()
+    
+    #not_faces = []
+    #for not_face in predict_faces:
+    #    not_faces.append(not_face[0].reshape(24,24))
+    #
+    #not_faces = np.array(not_faces)
+    
+else:
+    print("Not Faces Detected")
+    
+    

@@ -39,11 +39,10 @@ for participant in participants:
 
         face = image[np.abs(face_rect.top()):np.abs(face_rect.bottom()),
                             np.abs(face_rect.left()):np.abs(face_rect.right())]
-        face = cv2.resize(face, (24, 24))
-        face = (face-face.mean())/face.std()
-        noalign = "../datasets/img_align_celeba_crop_face/"+str(num)+".jpg"
+        face = cv2.resize(face, (21, 21))
+        #face = (face-face.mean())/face.std()
+        #noalign = "crop_faces/"+str(num)+".jpg"
 
-        # # Save the aligned image to a file
         #cv2.imwrite(noalign, face)
         faces.append(face)
 

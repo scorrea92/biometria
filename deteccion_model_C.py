@@ -111,6 +111,14 @@ model.compile(loss='binary_crossentropy',
               optimizer=adam,
               metrics=['accuracy'])
 
+from keras.utils import plot_model
+plot_model(model, to_file='model.png',show_shapes=True)
+
+from IPython.display import SVG
+from keras.utils.vis_utils import model_to_dot
+
+SVG(model_to_dot(model).create(prog='dot', format='svg'))
+
 history = model.fit_generator(datagen.flow(x_train, y_train),
                     steps_per_epoch = len(x_train)/batch_size,
                     epochs=epochs,

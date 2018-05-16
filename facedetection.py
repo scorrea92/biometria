@@ -59,14 +59,10 @@ try:
 
     start = time.time()
 
-    #crop_image = [preprocessing.scale( (cv2.resize(template, (24, 24))-np.mean(cv2.resize(template, (24, 24)), axis=0))/np.std(cv2.resize(template, (24, 24)), axis=0)) ]
-    ##crop_image = [preprocessing.scale(cv2.resize(template, (24, 24)))]
-    #crop_boxes = [[0, 0, 1.0]]
     crop_boxes = []
     crop_image = []
     for scale in delta:
         # Resize the image according to the scale 
-    #    resized = imutils.resize(template, width = int(template.shape[1] * scale))
         resized = scipy.misc.imresize(template, scale)
         
         if resized.shape[0] < 24 or resized.shape[1] < 24:
@@ -97,7 +93,7 @@ try:
     start = time.time()
     center_faces=[]
     for i, a in enumerate(prediction):
-        if prediction[i] > 0.9:
+        if prediction[i] > 0.5:
             x = int(crop_boxes[i][0]/crop_boxes[i][2])
             y = int(crop_boxes[i][1]/crop_boxes[i][2])
             center_faces.append([x+24, y+24])

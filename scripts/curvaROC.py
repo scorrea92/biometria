@@ -6,9 +6,6 @@ import matplotlib.pyplot as plt
 import matplotlib.patches as mpatches
 import argparse
 
-# Para ejecutarse se deben tener dos archivos en la carpeta data en la raiz del directorio
-# con el siguiente formato x_clientes y x_impostores, el script se ejecuta asi:
-# python curvaROC.py x 
 
 def FPFN(score_imposto, score_cliente, x):
     fn = []

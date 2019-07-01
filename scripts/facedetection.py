@@ -34,8 +34,8 @@ img_rows, img_cols = 24, 24
 
 try:
 
-    model = load_model('model_extraData.h5')
-    model.load_weights('weights_model_extraData.h5')
+    model = load_model('models/model_extraData.h5')
+    model.load_weights('models/weights_model_extraData.h5')
 
     # load the image image, convert it to grayscale
     template_color = cv2.imread(img_path)

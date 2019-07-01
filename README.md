@@ -31,12 +31,16 @@ Para el entrenamiento del modelo se realizo un división de train y validation 
 ![image](resources/model.png)
 
 Para la ejecución del programa se necesitan de dos parámetros uno obligatorio y el segundo opcional, el primero hace referencia la ruta donde se encuentra la imagen a analizar y el segundo permite probar diferentes pixeles de recorrido de ventana.
+
 ```
 python scripts/facedetection.py -i data/test5.jpg -p 1
-````
+```
 
-**Python code for detection**: [here](scripts/facedetection.py)
-**Python code for train model**: [here](scripts/deteccion_model_C.py)
+![image](resources/result.png)
+
+**Python code for detection**: [here](scripts/facedetection.py)**
+
+**Python code for train model**: [here](scripts/deteccion_model_C.py)**
 **Report**: [here](resources/Deteccion%20de%20rostros.pdf)
 
 ---
@@ -50,5 +54,5 @@ python scripts/facedetection.py -i data/test5.jpg -p 1
 
 ## Authors
 
-* **Sebastian Correa Echeverri** [scorrea92 gitlab](https://gitlab.com/scorrea92) [scorrea92 github](https://github.com/scorrea92)
+* **Sebastian Correa Echeverri** [gitlab](https://gitlab.com/scorrea92) [github](https://github.com/scorrea92)
 

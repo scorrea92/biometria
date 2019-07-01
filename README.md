@@ -38,9 +38,8 @@ python scripts/facedetection.py -i data/test5.jpg -p 1
 
 ![image](resources/result.png)
 
-**Python code for detection**: [here](scripts/facedetection.py)**
-
-**Python code for train model**: [here](scripts/deteccion_model_C.py)**
+**Python code for detection**: [here](scripts/facedetection.py)
+**Python code for train model**: [here](scripts/deteccion_model_C.py)
 **Report**: [here](resources/Deteccion%20de%20rostros.pdf)
 
 ---

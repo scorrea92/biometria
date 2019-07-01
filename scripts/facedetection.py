@@ -93,7 +93,7 @@ try:
     start = time.time()
     center_faces=[]
     for i, a in enumerate(prediction):
-        if prediction[i] > 0.5:
+        if prediction[i] > 0.9:
             x = int(crop_boxes[i][0]/crop_boxes[i][2])
             y = int(crop_boxes[i][1]/crop_boxes[i][2])
             center_faces.append([x+24, y+24])
